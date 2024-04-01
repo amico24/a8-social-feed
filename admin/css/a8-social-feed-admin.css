@@ -1,0 +1,52 @@
+.feed_content {
+    display: flex; 
+    gap: 5px; 
+    align-items: flex-start; 
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.feed{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    gap: 5px;
+    flex-flow: wrap;
+}
+
+.category_selector{
+    display: flex;
+    flex-direction:column;
+    border: 1px solid;
+    flex-wrap: wrap; 
+    width: 150px;
+    padding: 5px;
+    min-width: 150px;
+}
+
+[class|="account"] {
+    text-align: center; 
+    width: 150px; 
+    border: 1px solid #000000;
+}
+
+.hide-hyperlink, .hide-hyperlink:link, .hide-hyperlink:visited {
+    text-decoration: none;
+    color: black;
+}
+
+.account-name{
+    font-size: large;
+    border: 0;
+}
+
+.account-username{
+    font-size: medium; 
+    color: rgb(87, 87, 87);
+    border: 0;
+}
+
+.account-bio{
+    font-size: small;
+    border: 0;
+}
