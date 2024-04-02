@@ -59,6 +59,7 @@ class A8_Social_Feed_Admin {
 
 		add_action('admin_menu', array($this, 'add_plugin_admin_menu'));
 		add_action('init', array($this, 'init_admin_classes'));
+		add_action('init', array($this, 'delete_category'));
 		add_shortcode('feed_display', array($this, 'feed_display'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
@@ -66,6 +67,30 @@ class A8_Social_Feed_Admin {
 		add_action('wp_ajax_nopriv_insta_api', array($this, 'handle_api_data'));
 		add_action('wp_ajax_insta_api_more', array($this, 'handle_more_api_data'));
 		add_action('wp_ajax_nopriv_insta_api_more', array($this, 'handle_more_api_data'));
+	}
+	
+	//have to put the deletion for categories here bc the redirect has to be done on initialization
+	public function delete_category(){
+		$categories = A8_Social_Feed_Categories::getInstance();
+		if(isset($_GET['action'])){
+			if($_GET['action'] == 'delete-category'){
+				if(isset(($_GET['element']))){
+					$categories->delete_category($_GET['element']);
+				}
+			}
+			if($_GET['action'] == 'edit'){
+				if(isset(($_GET['element']))){
+					//to be done
+				}
+			}
+			$url = esc_url(remove_query_arg(array('action','element'), false));
+			/*
+			var_dump($url);
+			die();
+			*/
+			wp_safe_redirect ($url);
+			exit;
+		}
 	}
 
 	public function handle_more_api_data(){
@@ -211,7 +236,8 @@ class A8_Social_Feed_Admin {
 		//adds a page to display when you click the sidebar button
 		add_submenu_page($this->plugin_name, 'A8 Social Feed Settings', 'Settings', 'administrator', $this->plugin_name . '-settings', array($this, 'display_plugin_admin_settings'));
 
-		add_submenu_page($this->plugin_name, 'A8 Social Feed Users', 'Users', 'administrator', $this->plugin_name . '-users', array($this, 'display_plugin_admin_users'));
+		add_submenu_page($this->plugin_name, 'A8 Social Feed Profiles', 'Profiles', 'administrator', $this->plugin_name . '-profiles', array($this, 'display_plugin_admin_users'));
+		add_submenu_page($this->plugin_name, 'A8 Social Feed Categories', 'Categories', 'administrator', $this->plugin_name . '-categories', array($this, 'display_plugin_admin_categories'));
 	}
 	public function display_plugin_admin_dashboard()
 	{
@@ -227,6 +253,11 @@ class A8_Social_Feed_Admin {
 
 	public function display_plugin_admin_users(){
 		require_once 'partials/' . $this->plugin_name . '-admin-users-display.php';
+	}
+
+	public function display_plugin_admin_categories(){
+		require_once 'partials/class-' . $this->plugin_name . '-admin-categories-table.php';
+		require_once 'partials/' . $this->plugin_name . '-admin-categories-display.php';
 	}
 
 }

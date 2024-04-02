@@ -49,33 +49,4 @@ $categories = A8_Social_Feed_Categories::getInstance();
         <?php endforeach ?>
     </table>
 
-    <hr>
-
-    <h1>Categories</h1>
-    <table>
-        <tr>
-            <th>Category Name</th>
-            <th>Delete Category</th>
-        </tr>
-        <?php foreach ($categories->get_categories() as $category): ?>
-            <tr>
-                <td>
-                    <?= $category ?>
-                </td>
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="delete_category" id="delete_acategory" value="<?= $category ?>" />
-                        <button type="submit"> Delete </button>
-                    </form>
-                </td>
-            </tr>
-            <?php
-            if (isset($_POST['delete_category'])) {
-                //might wanna add a confirmation alert for this
-                $categories->delete_category($_POST['delete_category']);
-                unset($_POST['delete_category']);
-            }
-            ?>
-        <?php endforeach ?>
-    </table>
 </div>

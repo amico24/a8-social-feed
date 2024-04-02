@@ -58,18 +58,4 @@ $categories = A8_Social_Feed_Categories::getInstance();
         }        
     } ?>
 
-    <hr>
-
-    <h2>Categories</h2>
-    <p>Create New Category:</p>
-    <form method="POST">
-        <input type="text" id="new_cat_name" name="new_cat_name" placeholder="Category Name">
-        <button type="submit">Create Category</button>
-    </form>
-
-    <?php if (isset($_POST['new_cat_name'])){
-        if (isset($_POST['new_cat_name'])){
-            $categories->create_category($_POST['new_cat_name']);
-        }
-    }?>
 </div>
