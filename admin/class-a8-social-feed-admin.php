@@ -193,6 +193,7 @@ class A8_Social_Feed_Admin {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script('jquery');
+		wp_enqueue_script('table_quick_edit', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-table-quick-edit.js', array('jquery') , null);
 		//wp_enqueue_script('category-toggle', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-category-toggle.js', array('jquery') , null);
 		//wp_register_script('graphAPI', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-graph-api.js', array('jquery'), null);
 	}

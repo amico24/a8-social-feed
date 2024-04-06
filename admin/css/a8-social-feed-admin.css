@@ -50,3 +50,7 @@
     font-size: small;
     border: 0;
 }
+
+.asf-quick-edit{
+    cursor: pointer;
+}

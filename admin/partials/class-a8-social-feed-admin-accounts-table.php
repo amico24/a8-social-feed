@@ -103,7 +103,7 @@ class Account_Table extends WP_List_Table {
 
     function column_name($item){
         $actions = array(
-            'edit' => sprintf('<a href="?page=%s&action=%s&element=%s"> Edit </a>', $_REQUEST['page'], 'edit-account', $item['name']),
+            'edit' => sprintf('<a class="asf-quick-edit"> Edit </a>'),
             'delete' => sprintf('<a href="?page=%s&action=%s&element=%s"> Delete </a>', $_REQUEST['page'], 'delete-account', $item['name']),
         );
         return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions)); 
