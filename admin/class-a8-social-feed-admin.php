@@ -59,7 +59,7 @@ class A8_Social_Feed_Admin {
 
 		add_action('admin_menu', array($this, 'add_plugin_admin_menu'));
 		add_action('init', array($this, 'init_admin_classes'));
-		add_action('init', array($this, 'delete_category'));
+		add_action('init', array($this, 'edit_options'));
 		add_shortcode('feed_display', array($this, 'feed_display'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
@@ -70,15 +70,62 @@ class A8_Social_Feed_Admin {
 	}
 	
 	//have to put the deletion for categories here bc the redirect has to be done on initialization
-	public function delete_category(){
+	public function edit_options(){
 		$categories = A8_Social_Feed_Categories::getInstance();
+		$accounts = A8_Social_Feed_Users::getInstance();
 		if(isset($_GET['action'])){
+			switch ($_GET['action']){
+				case 'delete-category':
+					if(isset(($_GET['element']))){
+						$categories->delete_category($_GET['element']);
+					}
+					break;
+				case 'edit-category':
+					if(isset(($_GET['element']))){
+						//to be done
+					}
+					break;
+				case 'delete-account':
+					if(isset(($_GET['element']))){
+						$accounts->delete_user($_GET['element']);
+					}
+					break;
+				case 'edit-account':
+					if(isset(($_GET['element']))){
+						//to be done
+					}
+					break;
+			}
+			/*
 			if($_GET['action'] == 'delete-category'){
 				if(isset(($_GET['element']))){
 					$categories->delete_category($_GET['element']);
 				}
 			}
-			if($_GET['action'] == 'edit'){
+			if($_GET['action'] == 'edit-category'){
+				if(isset(($_GET['element']))){
+					//to be done
+				}
+			}*/
+			$url = esc_url(remove_query_arg(array('action','element'), false));
+			/*
+			var_dump($url);
+			die();
+			*/
+			wp_safe_redirect ($url);
+			exit;
+		}
+	}
+
+	public function edit_account(){
+		$accounts = A8_Social_Feed_Users::getInstance();
+		if(isset($_GET['action'])){
+			if($_GET['action'] == 'delete-account'){
+				if(isset(($_GET['element']))){
+					$accounts->delete_user($_GET['element']);
+				}
+			}
+			if($_GET['action'] == 'edit-account'){
 				if(isset(($_GET['element']))){
 					//to be done
 				}
@@ -252,6 +299,7 @@ class A8_Social_Feed_Admin {
 	}
 
 	public function display_plugin_admin_users(){
+		require_once 'partials/class-' . $this->plugin_name . '-admin-accounts-table.php';
 		require_once 'partials/' . $this->plugin_name . '-admin-users-display.php';
 	}
 

@@ -45,4 +45,11 @@ class A8_Social_Feed_Categories{
         }
         update_option($this -> db_categories, $this -> categories);
     }
+
+    //untested
+    function edit_category_name($old_name, $new_name){ 
+        $old_cats = $this -> categories;
+        $this -> categories = array_replace($old_cats, array(array_search($old_name, $old_cats) => $new_name));
+        update_option($this -> db_categories, $this -> categories);
+    }
 }

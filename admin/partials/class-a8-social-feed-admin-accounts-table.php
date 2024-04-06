@@ -1,30 +1,37 @@
 <?php
 
-//apprently their tables are not an api but its a class u have to extend
-//pain
-class Category_Table extends WP_List_Table {
+class Account_Table extends WP_List_Table {
     private $table_data = array();
 
     function __construct(){
         parent::__construct( array(
             'singular'=> 'asf_category', //Singular label
             'plural' => 'asf_categories', //plural label, also this well be one of the table css class
-            'ajax'   => true 
+            'ajax'   => true
             ) );
     }
 
     function prepare_items(){
-        //when u get the categories in from the options is gets passed as an indexed array
-        //for the other functions to work normally we want the categories to be in a 2d array with the index and name in their own arrays as each entry
-        $temp = get_option("asf_categories");
-        //this restructures the categories so the nidex and name have their own entries
-        //i mental-ed this shit i am so big brained for this
-        foreach($temp as $category){
+        $users = ASF\Admin\A8_Social_Feed_Users::getInstance();
+        $categories = ASF\Admin\A8_Social_Feed_Categories::getInstance();
+
+
+        foreach ($users->get_user_list() as $user) {
+            $category_checklist = '';
+            foreach($categories->get_categories() as $category){
+                $category_checklist .= '
+                <input type = "checkbox" id= "' . $category .'" '. checked(in_array($category, $users->get_user($user)["category"]), true, false) . disabled(true, true, false) .'>
+                <label for="'.$category.'">'.$category.'</label>
+                <br>';
+            } //i feel like im supposed to use sprintf for this
             array_push($this -> table_data, array(
-                'index' => array_search($category, $temp)+1,
-                'name' => $category)
+                'index' => array_search($user, $users->get_user_list())+1,
+                'name' => $user,
+                'categories' => $category_checklist
+                )
             );
         }
+
 
         $columns = $this->get_columns();
         $hidden = array();
@@ -32,37 +39,34 @@ class Category_Table extends WP_List_Table {
         $this->_column_headers = array($columns, $hidden, $sortable);
 
         usort($this->table_data, array(&$this, 'usort_reorder'));
-        /*
-        var_dump($_GET);
-        die();
-        */
-        $this->items = $this->table_data;
 
+        $this->items = $this->table_data;
     }
-    //define column headers
+
     function get_columns(){
         $columns = array(
             'cb' => '<input type="checkbox" />',
             'index' => '#',
             'name' => 'Name',
+            'categories' => 'Categories',
+
         );
         return $columns;
     }
-    
-    //defines what values to put for every data entry
-    //column_[columnName] also works if i wanna separate the behavior into indiv functions
+
     function column_default( $item, $column_name ) {
         switch( $column_name ) { 
             case 'index':
                 return $item[ $column_name ];
             case 'name':
                 return $item[ $column_name ];
+            case 'categories':
+                return $item[ $column_name ];
             default:
                 return print_r( $item, true ); //Show the whole array for troubleshooting purposes
         }
     }
 
-    //sets checkboxes for each row
     function column_cb($item){
         return sprintf(
             '<input type="checkbox" name="element[]" value="%s" />',
@@ -99,9 +103,9 @@ class Category_Table extends WP_List_Table {
 
     function column_name($item){
         $actions = array(
-            'edit' => sprintf('<a href="?page=%s&action=%s&element=%s"> Edit </a>', $_REQUEST['page'], 'edit-category', $item['name']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&element=%s"> Delete </a>', $_REQUEST['page'], 'delete-category', $item['name']),
+            'edit' => sprintf('<a href="?page=%s&action=%s&element=%s"> Edit </a>', $_REQUEST['page'], 'edit-account', $item['name']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&element=%s"> Delete </a>', $_REQUEST['page'], 'delete-account', $item['name']),
         );
-        return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions));
+        return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions)); 
     }
 }

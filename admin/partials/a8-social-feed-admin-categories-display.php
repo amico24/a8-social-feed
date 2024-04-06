@@ -20,7 +20,6 @@ $categories = A8_Social_Feed_Categories::getInstance();
 $catTable = new Category_Table;
 
 $catTable->prepare_items();
-$catTable->display();
 ?>
 
 <div class="wrap">
@@ -38,6 +37,9 @@ $catTable->display();
             $categories->create_category($_POST['new_cat_name']);
         }
     } ?>
+
+    <?php $catTable->display(); ?>
+    <!--
     <table>
         <tr>
             <th>Category Name</th>
@@ -68,6 +70,7 @@ $catTable->display();
             ?>
         <?php endforeach ?>
     </table>
+    -->
     <?php /*
         $url = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $url_parts = parse_url($url);
