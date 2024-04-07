@@ -38,7 +38,15 @@ $catTable->prepare_items();
         }
     } ?>
 
-    <?php $catTable->display(); ?>
+    <?php 
+        $catTable->display();
+        $table_data = array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'data' => 'test'
+        );
+        wp_localize_script('table_quick_edit', 'table_data', $table_data);
+        wp_enqueue_script('table_quick_edit');
+    ?>
     <!--
     <table>
         <tr>

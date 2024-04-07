@@ -46,10 +46,18 @@ class A8_Social_Feed_Categories{
         update_option($this -> db_categories, $this -> categories);
     }
 
-    //untested
+    //holy fuck i just realized i also need to update all the users so the categories are consistent
     function edit_category_name($old_name, $new_name){ 
-        $old_cats = $this -> categories;
-        $this -> categories = array_replace($old_cats, array(array_search($old_name, $old_cats) => $new_name));
-        update_option($this -> db_categories, $this -> categories);
+        if(in_array($old_name, $this -> categories)){
+            $old_cats = $this -> categories;
+            $this -> categories = array_replace($old_cats, array(array_search($old_name, $old_cats) => $new_name));
+            $users = A8_Social_Feed_Users::getInstance();
+            $users -> update_category_name($old_name, $new_name); //to update users categories
+            update_option($this -> db_categories, $this -> categories);
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 }

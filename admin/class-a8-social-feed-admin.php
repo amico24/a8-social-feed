@@ -67,6 +67,25 @@ class A8_Social_Feed_Admin {
 		add_action('wp_ajax_nopriv_insta_api', array($this, 'handle_api_data'));
 		add_action('wp_ajax_insta_api_more', array($this, 'handle_more_api_data'));
 		add_action('wp_ajax_nopriv_insta_api_more', array($this, 'handle_more_api_data'));
+		add_action('wp_ajax_edit_category', array($this, 'edit_category'));
+		add_action('wp_ajax_nopriv_edit_category', array($this, 'edit_category'));
+	}
+
+	public function edit_category(){
+		//var_dump($_POST);
+		//die();
+		//$raw_data = wp_unslash($_POST);
+		//$cat_info = json_decode($raw_data,1);
+		$cat_info = $_POST['category_data'];
+		$categories = A8_Social_Feed_Categories::getInstance();
+		if($categories -> edit_category_name($cat_info['old_name'], $cat_info['new_name'])){
+			wp_send_json_success();
+		} else {
+			wp_send_json_error();
+		}
+		//untested
+		
+		
 	}
 	
 	//have to put the deletion for categories here bc the redirect has to be done on initialization
@@ -193,7 +212,8 @@ class A8_Social_Feed_Admin {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script('jquery');
-		wp_enqueue_script('table_quick_edit', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-table-quick-edit.js', array('jquery') , null);
+		wp_register_script('table_quick_edit', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-table-quick-edit.js', array('jquery') , null);
+		//wp_enqueue_script('table_quick_edit', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-table-quick-edit.js', array('jquery') , null);
 		//wp_enqueue_script('category-toggle', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-category-toggle.js', array('jquery') , null);
 		//wp_register_script('graphAPI', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-graph-api.js', array('jquery'), null);
 	}

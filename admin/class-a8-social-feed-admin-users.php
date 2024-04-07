@@ -96,5 +96,18 @@ class A8_Social_Feed_Users {
         return $user_list;
     }
 
+    //putting this in users class bc i need access to the users db entry to do this
+    function update_category_name($old_name, $new_name){
+        foreach($this-> users as $username => $user_info){
+            $user_categories = $user_info['category'];
+            if(in_array($old_name, $user_categories)){
+                $cat_index = array_search($old_name, $user_categories);
+                $updated_user_categories = array_replace($user_categories, array($cat_index => $new_name));
+                $this->users[$username]['category'] = $updated_user_categories;
+            }
+        }
+        update_option($this -> db_users, $this -> users);
+    }
+
 
 }
