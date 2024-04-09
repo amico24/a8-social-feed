@@ -31,7 +31,16 @@ $accTable->prepare_items();
         }        
     } ?>
 
-    <?php $accTable->display(); ?>
+    <?php 
+        $accTable->display();
+        $table_data = array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'type' => 'profiles',
+            'categories' => $categories -> get_categories()
+        );
+        wp_localize_script('table_quick_edit', 'table_data', $table_data);
+        wp_enqueue_script('table_quick_edit');
+    ?>
 
     <form method="POST">
 

@@ -42,7 +42,7 @@ $catTable->prepare_items();
         $catTable->display();
         $table_data = array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'data' => 'test'
+            'type' => 'categories'
         );
         wp_localize_script('table_quick_edit', 'table_data', $table_data);
         wp_enqueue_script('table_quick_edit');

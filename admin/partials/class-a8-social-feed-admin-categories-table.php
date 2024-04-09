@@ -99,7 +99,7 @@ class Category_Table extends WP_List_Table {
 
     function column_name($item){
         $actions = array(
-            'edit' => sprintf('<a class="asf-quick-edit"> Edit </a>'),
+            'edit' => sprintf('<a class="asf-quick-edit"> Edit </a>'), //button isnt a link bc were gonna use js for this
             'delete' => sprintf('<a href="?page=%s&action=%s&element=%s"> Delete </a>', $_REQUEST['page'], 'delete-category', $item['name']),
         );
         return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions));

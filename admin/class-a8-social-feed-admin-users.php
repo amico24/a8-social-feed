@@ -47,6 +47,7 @@ class A8_Social_Feed_Users {
     }
 
     function update_user_options($user_options){
+        //now why the fuck did i not specify how to use this
         update_option($this -> db_users, $user_options);
     }
 
