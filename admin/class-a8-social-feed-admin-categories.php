@@ -46,7 +46,6 @@ class A8_Social_Feed_Categories{
         update_option($this -> db_categories, $this -> categories);
     }
 
-    //holy fuck i just realized i also need to update all the users so the categories are consistent
     function edit_category_name($old_name, $new_name){ 
         if(in_array($old_name, $this -> categories)){
             $old_cats = $this -> categories;

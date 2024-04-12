@@ -54,3 +54,7 @@
 .asf-quick-edit{
     cursor: pointer;
 }
+
+.wp-list-table .column-index{
+    width: 5%;
+}

@@ -69,8 +69,21 @@ class A8_Social_Feed_Admin {
 		add_action('wp_ajax_nopriv_insta_api_more', array($this, 'handle_more_api_data'));
 		add_action('wp_ajax_edit_category', array($this, 'edit_category'));
 		add_action('wp_ajax_nopriv_edit_category', array($this, 'edit_category'));
+		add_action('wp_ajax_edit_account', array($this, 'edit_account'));
+		add_action('wp_ajax_nopriv_edit_account', array($this, 'edit_account'));
 	}
 
+	public function edit_account(){
+		$user_data = $_POST['account_data']['user_data'];
+		$username = $_POST['account_data']['username'];
+		$users = A8_Social_Feed_Users::getInstance();
+		if($users -> update_user_options($user_data, $username)){
+			wp_send_json_success();
+		} else{
+			wp_send_json_error($_POST);
+		}
+
+	}
 	public function edit_category(){
 		//var_dump($_POST);
 		//die();
@@ -83,7 +96,6 @@ class A8_Social_Feed_Admin {
 		} else {
 			wp_send_json_error();
 		}
-		//untested
 		
 		
 	}
@@ -115,17 +127,6 @@ class A8_Social_Feed_Admin {
 					}
 					break;
 			}
-			/*
-			if($_GET['action'] == 'delete-category'){
-				if(isset(($_GET['element']))){
-					$categories->delete_category($_GET['element']);
-				}
-			}
-			if($_GET['action'] == 'edit-category'){
-				if(isset(($_GET['element']))){
-					//to be done
-				}
-			}*/
 			$url = esc_url(remove_query_arg(array('action','element'), false));
 			/*
 			var_dump($url);
@@ -136,28 +137,7 @@ class A8_Social_Feed_Admin {
 		}
 	}
 
-	public function edit_account(){
-		$accounts = A8_Social_Feed_Users::getInstance();
-		if(isset($_GET['action'])){
-			if($_GET['action'] == 'delete-account'){
-				if(isset(($_GET['element']))){
-					$accounts->delete_user($_GET['element']);
-				}
-			}
-			if($_GET['action'] == 'edit-account'){
-				if(isset(($_GET['element']))){
-					//to be done
-				}
-			}
-			$url = esc_url(remove_query_arg(array('action','element'), false));
-			/*
-			var_dump($url);
-			die();
-			*/
-			wp_safe_redirect ($url);
-			exit;
-		}
-	}
+	
 
 	public function handle_more_api_data(){
 		$raw_data=wp_unslash($_POST); //cannot tell if i need to use json_decode here 

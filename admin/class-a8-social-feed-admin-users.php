@@ -46,9 +46,20 @@ class A8_Social_Feed_Users {
         return array_keys($this -> users);
     }
 
-    function update_user_options($user_options){
+    function update_user_options($user_options, $username = 'ALL'){
+
         //now why the fuck did i not specify how to use this
-        update_option($this -> db_users, $user_options);
+        if($username == 'ALL'){
+            update_option($this -> db_users, $user_options);
+            return true;
+        } else if (in_array($username, $this -> get_user_list())){
+            $this -> users [$username] = $user_options;
+            update_option($this -> db_users, $this -> users);
+            return true;
+        } else{
+            return false;
+        }
+        
     }
 
     function delete_user($username){
