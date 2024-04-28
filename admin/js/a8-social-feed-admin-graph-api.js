@@ -3,6 +3,8 @@
 
 //for tracking if next page should be called
 //place counter on every
+
+//added max posts per api call (works lmao first try)
 jQuery(document).ready(function($){
 
     console.log(php_data);
@@ -30,7 +32,7 @@ jQuery(document).ready(function($){
                 FB.api( //this works
                     '/'+args.ig_user_id,
                     'GET',
-                    {"fields":'business_discovery.username('+username+'){username,name,profile_picture_url,biography,media{media_url,id,username,timestamp,media_type,permalink}}',
+                    {"fields":'business_discovery.username('+username+'){username,name,profile_picture_url,biography,media.limit('+args.max_posts+'){media_url,id,username,timestamp,media_type,permalink}}',
                     "access_token":args.access_token},
                     function(response) {
                         user_data[username]=response;
@@ -67,7 +69,7 @@ jQuery(document).ready(function($){
                     FB.api( //this works
                     '/'+args.ig_user_id,
                     'GET',
-                    {"fields":'business_discovery.username('+username+'){username,name,profile_picture_url,biography,media.after('+user_data[username]["business_discovery"]["media"]["paging"]["cursors"]["after"]+'){media_url,id,username,timestamp,media_type,permalink}}',
+                    {"fields":'business_discovery.username('+username+'){username,name,profile_picture_url,biography,media.after('+user_data[username]["business_discovery"]["media"]["paging"]["cursors"]["after"]+').limit('+args.max_posts+'){media_url,id,username,timestamp,media_type,permalink}}',
                     "access_token":args.access_token},
                     function(response) {
                         more_user_data[username] = response;

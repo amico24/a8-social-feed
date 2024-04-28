@@ -241,6 +241,9 @@ class A8_Social_Feed_Admin {
 			'access_token' => $api -> get_access_token(),
 			'ig_user_id' => $api -> get_ig_id(),
 			'ig_client_id' => $api -> get_client_id(),
+			'max_accounts' => $api -> get_max_accounts(),
+			'max_posts' => $api -> get_max_posts(),
+			'abs_max_posts' => $api -> get_abs_max_posts(),
 			'user_list' => $accounts_to_display,
 			'shortcode_atts' => $a,
 			'shortcode_identifier' => $identifier,
@@ -280,13 +283,14 @@ class A8_Social_Feed_Admin {
 	{
 		//adds the option for the settings to the sidebar
 		add_menu_page($this->plugin_name, 'A8 Social Feed', 'administrator', $this->plugin_name, array($this, 'display_plugin_admin_dashboard'), 'dashicons-camera', 26);
-
+		add_submenu_page($this->plugin_name, 'A8 Social Feed Profiles', 'Profile Management', 'administrator', $this->plugin_name . '-profiles', array($this, 'display_plugin_admin_users'));
 		//adds a page to display when you click the sidebar button
+		add_submenu_page($this->plugin_name, 'A8 Social Feed Categories', 'Category Management', 'administrator', $this->plugin_name . '-categories', array($this, 'display_plugin_admin_categories'));
+	
 		add_submenu_page($this->plugin_name, 'A8 Social Feed Settings', 'Settings', 'administrator', $this->plugin_name . '-settings', array($this, 'display_plugin_admin_settings'));
 
-		add_submenu_page($this->plugin_name, 'A8 Social Feed Profiles', 'Profiles', 'administrator', $this->plugin_name . '-profiles', array($this, 'display_plugin_admin_users'));
-		add_submenu_page($this->plugin_name, 'A8 Social Feed Categories', 'Categories', 'administrator', $this->plugin_name . '-categories', array($this, 'display_plugin_admin_categories'));
-	}
+		
+		}
 	public function display_plugin_admin_dashboard()
 	{
 		//connects the display file for the dashboard and displays the html there

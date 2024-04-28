@@ -12,7 +12,7 @@ $accTable->prepare_items();
 ?>
 
 <div class="wrap">
-    <h2>Users</h2>
+    <h2>Profile Management</h2>
     <hr>
     <h2>Connected Accounts</h2>
     <p>Add Business/Creator Account:</p>

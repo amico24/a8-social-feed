@@ -20,6 +20,9 @@ $categories = A8_Social_Feed_Categories::getInstance();
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
 <div class="wrap">
+
+<p>idk what to do with this page</p>
+<!--
     <h1>Accounts</h1>
     <table>
         <tr>
@@ -48,5 +51,7 @@ $categories = A8_Social_Feed_Categories::getInstance();
             ?>
         <?php endforeach ?>
     </table>
+
+        -->
 
 </div>

@@ -27,6 +27,12 @@ class A8_Social_Feed_Graph_API{
      */
     private $app_secret;
 
+    private $max_accounts;
+    
+    private $max_posts;
+
+    private $abs_max_posts;
+
     /**
      * Name of database entry that stores long-lived access token
      * @var string
@@ -51,6 +57,13 @@ class A8_Social_Feed_Graph_API{
      */
     private $db_app_secret = 'asf_app_secret';
 
+    private $db_max_accounts = 'asf_max_accounts';
+    
+    private $db_max_posts = 'asf_max_posts';
+
+    private $db_abs_max_posts = 'asf_abs_max_posts';
+
+
 
     private static $instance = null;
   
@@ -60,6 +73,10 @@ class A8_Social_Feed_Graph_API{
         $this->ig_user_id = get_option($this -> db_ig_user_id,'');
         $this->client_id = get_option($this -> db_client_id,'');
         $this->app_secret = get_option($this -> db_app_secret,'');
+
+        $this->max_accounts = get_option($this -> db_max_accounts, 10);
+        $this->max_posts = get_option($this -> db_max_posts, 20);
+        $this->abs_max_posts = get_option($this -> db_abs_max_posts, 100);
     }
     
     /**
@@ -122,6 +139,30 @@ class A8_Social_Feed_Graph_API{
             }
             return true;
         }
+    }
+
+    public function update_feed_settings($max_accounts, $max_posts, $abs_max_posts){
+        if(is_int($max_accounts) && is_int($max_posts) && is_int($abs_max_posts)){
+            update_option($this -> db_max_accounts,$max_accounts);
+            update_option($this -> db_max_posts,$max_posts);
+            update_option($this -> db_abs_max_posts,$abs_max_posts);
+            new A8_Social_Feed_Errors('Feed Settings Updated', 'notice-success');
+
+        } else {
+            new A8_Social_Feed_Errors('Please ensure max values are ints', 'notice-error');
+        }
+    }
+
+    public function get_max_accounts(){
+        return $this -> max_accounts;
+    }
+
+    public function get_max_posts(){
+        return $this -> max_posts;
+    }
+
+    public function get_abs_max_posts(){
+        return $this -> abs_max_posts;
     }
 
     public function get_ig_id(){

@@ -59,7 +59,7 @@ class Post_Display extends Display{
                     </a>
                 ';
             } else {
-                $html = '<p>Post Contains Copyrighted Material</p>'; // should probably change this eventually
+                //$html = '<p>Post Contains Copyrighted Material</p>'; // should probably change this eventually
             }
         }
         return $html;
