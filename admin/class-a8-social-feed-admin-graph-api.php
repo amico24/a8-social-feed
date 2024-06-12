@@ -21,6 +21,7 @@ class A8_Social_Feed_Graph_API{
      */
     private $client_id;
 
+
     /**
      * App secret of Facebook app
      * @var string
@@ -32,6 +33,15 @@ class A8_Social_Feed_Graph_API{
     private $max_posts;
 
     private $abs_max_posts;
+
+    private $db_settings = 'asf-settings';
+
+    private $db_api_info = 'asf-api-token';
+
+
+    private $settings;
+    
+    private $api_info;
 
     /**
      * Name of database entry that stores long-lived access token
@@ -68,15 +78,18 @@ class A8_Social_Feed_Graph_API{
     private static $instance = null;
   
     private function __construct() { 
-        //check if values are already in options
-        $this->access_token = get_option($this -> db_access_token,'');
-        $this->ig_user_id = get_option($this -> db_ig_user_id,'');
-        $this->client_id = get_option($this -> db_client_id,'');
-        $this->app_secret = get_option($this -> db_app_secret,'');
+        $this -> settings = get_option($this -> db_settings, array());
+        $this -> api_info = get_option($this -> db_api_info, array());
 
-        $this->max_accounts = get_option($this -> db_max_accounts, 10);
-        $this->max_posts = get_option($this -> db_max_posts, 20);
-        $this->abs_max_posts = get_option($this -> db_abs_max_posts, 100);
+
+        $this->access_token = $this -> api_info['long_access_token'] ?? '';
+        $this->ig_user_id = $this -> api_info['ig_user_id'] ?? '';
+        $this->client_id = $this -> settings['client_id'] ?? '';
+        $this->app_secret = $this -> settings['app_secret'] ?? '';
+
+        $this->max_accounts = $this -> settings['max_accounts'] ?? '10';
+        $this->max_posts = $this -> settings['max_posts'] ?? '20';
+        $this->abs_max_posts = $this -> settings['abs_max_posts'] ?? '100';
     }
     
     /**
@@ -89,6 +102,47 @@ class A8_Social_Feed_Graph_API{
         }
     
         return self::$instance;
+    }
+
+    
+
+    public function update_access_token($short_token) {
+        $token_response_json = wp_remote_get('https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id='.$this->client_id.'&client_secret='.$this->app_secret.'&fb_exchange_token='.$short_token);
+        $token_response = json_decode($token_response_json['body'], true);
+        if (!array_key_exists('access_token', $token_response)){
+            new A8_Social_Feed_Errors($token_response['error']['message'], 'notice-error');
+            return false;
+        } else {
+            $this->access_token = $token_response['access_token'];
+
+            $fb_page_data_json = wp_remote_get('https://graph.facebook.com/v18.0/me/accounts?access_token='.$this -> access_token);
+            $fb_page_data = json_decode($fb_page_data_json['body'], true);
+            //var_dump($fb_page_data);
+            if(array_key_exists('error',$fb_page_data)){
+                new A8_Social_Feed_Errors($fb_page_data['error']['message'], 'notice-error');
+                return false;
+            }else {
+                //var_dump($fb_page_data);
+                //die('end');
+                $fb_page_id = $fb_page_data['data'][0]['id'];
+                $insta_acc_data_json = wp_remote_get('https://graph.facebook.com/v18.0/'.$fb_page_id.'?fields=instagram_business_account&access_token='.$this -> access_token);
+                $insta_acc_data = json_decode($insta_acc_data_json['body'], true);
+                //var_dump($insta_acc_data);
+                //die('end');
+                if(array_key_exists('error',$insta_acc_data)){
+                    new A8_Social_Feed_Errors($insta_acc_data['error']['message'], 'notice-error');
+                    return false;
+                }else{
+                    $this -> ig_user_id = $insta_acc_data['instagram_business_account']['id'];
+                    update_option($this -> db_api_info, array (
+                        'short_access_token' => '',
+                        'long_access_token' => $this -> access_token, 
+                        'ig_user_id' => $this -> ig_user_id
+                    ));
+                }
+            }
+            return true;
+        }
     }
 
     /**
@@ -175,7 +229,12 @@ class A8_Social_Feed_Graph_API{
     }
 
     public function get_access_token(){
-        return $this -> access_token;
+        if(empty($this -> access_token)){
+            return 'Access token not found';
+        }else {
+            return $this -> access_token;
+        }
+        
     }
 
     public function get_client_id(){

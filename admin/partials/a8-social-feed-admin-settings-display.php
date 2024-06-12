@@ -6,11 +6,62 @@ namespace ASF\Admin;
 $graph_api = A8_Social_Feed_Graph_API::getInstance();
 $users = A8_Social_Feed_Users::getInstance();
 $categories = A8_Social_Feed_Categories::getInstance();
+
+/*
+$settings = new Setting($this->plugin_name . '-settings');
+$settings->add_section('ASF-API-settings');
+$settings->add_field(
+    array(
+        'type'  => 'text',
+        'id'    => 'fb-app-client-id',
+        'label' => 'Facebook App Client ID: ',
+        'tip'   => '',
+    )
+);
+$settings->save();
+$settings->show_form();*/
+
+
+
 ?>
+
+
 
 <div class="wrap">
     <h2>Settings</h2>
 
+    <form action='options.php' method='post'>
+
+        <?php
+        settings_fields('ASF-settings');
+
+        echo '<table class="form-table" role="presentation">';
+		do_settings_fields( $this->plugin_name . '-settings', 'asf-api-details');
+        do_settings_fields( $this->plugin_name . '-settings', 'asf-feed-settings');
+		echo '</table>';
+
+        submit_button();
+        ?>
+
+    </form>
+
+    <form action='options.php' method='post'>
+
+        <?php
+        settings_fields('ASF-API-token');
+
+        echo '<table class="form-table" role="presentation">';
+		do_settings_fields( $this->plugin_name . '-settings', 'asf-api-access-token');
+		echo '</table>';
+
+        submit_button();
+        ?>
+
+    </form>
+
+
+
+    <!--
     <hr>
     <h3>Graph API Details</h3>
     <span>Facebook App Client ID: </span>
@@ -49,12 +100,14 @@ $categories = A8_Social_Feed_Categories::getInstance();
         <button type="submit" class="button-primary button">Submit</button>
     </form>
 
+    
     <?php
+         /*
         if(isset($_POST['app_details'])){
             //var_dump($_POST['app_details']);
             //die();
             $graph_api -> update_app_details($_POST['app_details']['access_token'], $_POST['app_details']['client_id'], $_POST['app_details']['app_secret']);
-        }
+        }*/
     ?>
 
     <hr>
@@ -75,6 +128,8 @@ $categories = A8_Social_Feed_Categories::getInstance();
         <button type="submit" class="button-primary button">Submit</button>
     </form>
 
+    -->
+
     <?php
         if(isset($_POST['feed_settings'])){
             //var_dump($_POST['feed_settings']);
@@ -84,6 +139,7 @@ $categories = A8_Social_Feed_Categories::getInstance();
             }
         }
     ?>
+
     <!--
         TBD:
         use values above to change API call to lessen posts called

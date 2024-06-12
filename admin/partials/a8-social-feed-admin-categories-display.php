@@ -20,12 +20,23 @@ $categories = A8_Social_Feed_Categories::getInstance();
 $catTable = new Category_Table;
 
 $catTable->prepare_items();
+
 ?>
 
 <div class="wrap">
 
     <h1>Categories</h1>
 
+    <form action='options.php' method='post'>
+
+        <?php
+        settings_fields('ASF-category');
+        do_settings_sections($this->plugin_name . '-categories');
+        submit_button("Create Category");
+        ?>
+
+    </form>
+<!--
     <p>Create New Category:</p>
     <form method="POST">
         <input type="text" id="new_cat_name" name="new_cat_name" placeholder="Category Name">
@@ -37,6 +48,8 @@ $catTable->prepare_items();
             $categories->create_category($_POST['new_cat_name']);
         }
     } ?>
+
+-->
 
     <?php 
         $catTable->display();

@@ -14,6 +14,17 @@ $accTable->prepare_items();
 <div class="wrap">
     <h2>Profile Management</h2>
     <hr>
+
+    <form action='options.php' method='post'>
+
+        <?php
+        settings_fields('ASF-user');
+        do_settings_sections($this->plugin_name . '-profiles');
+        submit_button("Find Account");
+        ?>
+
+    </form>
+<!--
     <h2>Connected Accounts</h2>
     <p>Add Business/Creator Account:</p>
     <form method="POST">
@@ -30,6 +41,7 @@ $accTable->prepare_items();
             new A8_Social_Feed_Errors('Instagram account does not exist or is not a Business/Creator account.', 'notice-error');
         }        
     } ?>
+-->
 
     <?php 
         $accTable->display();
