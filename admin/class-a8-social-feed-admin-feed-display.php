@@ -13,7 +13,7 @@ class A8_Social_Feed_Admin_Feed_Display {
 
     private $shortcode_identifier;
 
-    private $feed_length;
+    private $feed_length = null;
 
     function __construct($atts, $data, $identifier){
         $this -> a = $atts;
@@ -32,14 +32,14 @@ class A8_Social_Feed_Admin_Feed_Display {
                 break;
         }
 
-        if(filter_var($this -> a['length'], FILTER_VALIDATE_INT) === true){
+        if(filter_var($this -> a['length'], FILTER_VALIDATE_INT) == true){
             $this -> feed_length = $this -> a['length'];
-        } elseif($this -> a['length'] == "many") {
+        }/* elseif($this -> a['length'] == "many") {
             $this -> feed_length = null;
         } else {
             //add error checking here
-        }
-		
+        }*/
+		//else conditions broke the length parameter for some reason
 
     }
 
@@ -96,7 +96,7 @@ class A8_Social_Feed_Admin_Feed_Display {
                 };
                 usort($post_object_list, $date_compare);
 
-                if(!is_null($this -> feed_length)){
+                if(!empty($this -> feed_length)){
                     $post_object_list = array_slice($post_object_list, 0, $this -> feed_length);
                 }
                 //make html

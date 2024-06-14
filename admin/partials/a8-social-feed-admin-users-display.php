@@ -14,7 +14,7 @@ $accTable->prepare_items();
 <div class="wrap">
     <h2>Profile Management</h2>
     <hr>
-
+    
     <form action='options.php' method='post'>
 
         <?php
@@ -24,24 +24,6 @@ $accTable->prepare_items();
         ?>
 
     </form>
-<!--
-    <h2>Connected Accounts</h2>
-    <p>Add Business/Creator Account:</p>
-    <form method="POST">
-        <input type="text" id="new_account" name="new_account" placeholder="Username">
-        <button type="submit">Find Account</button>
-    </form>
-
-    <?php if (isset($_POST['new_account'])){
-        if ($graph_api->account_exists($_POST['new_account'])){
-            $users -> add_user($_POST['new_account']);
-            new A8_Social_Feed_Errors('Account Added.', 'notice-success');
-        
-        } else{
-            new A8_Social_Feed_Errors('Instagram account does not exist or is not a Business/Creator account.', 'notice-error');
-        }        
-    } ?>
--->
 
     <?php 
         $accTable->display();

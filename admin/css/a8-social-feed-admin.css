@@ -58,3 +58,8 @@
 .wp-list-table .column-index{
     width: 5%;
 }
+
+ul.asf-default-page{
+    list-style: inside;
+    margin-left: 2em;
+}

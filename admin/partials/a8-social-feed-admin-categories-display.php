@@ -36,20 +36,6 @@ $catTable->prepare_items();
         ?>
 
     </form>
-<!--
-    <p>Create New Category:</p>
-    <form method="POST">
-        <input type="text" id="new_cat_name" name="new_cat_name" placeholder="Category Name">
-        <button type="submit">Create Category</button>
-    </form>
-
-    <?php if (isset($_POST['new_cat_name'])) {
-        if (isset($_POST['new_cat_name'])) {
-            $categories->create_category($_POST['new_cat_name']);
-        }
-    } ?>
-
--->
 
     <?php 
         $catTable->display();
@@ -59,45 +45,6 @@ $catTable->prepare_items();
         );
         wp_localize_script('table_quick_edit', 'table_data', $table_data);
         wp_enqueue_script('table_quick_edit');
-    ?>
-    <!--
-    <table>
-        <tr>
-            <th>Category Name</th>
-            <th>Delete Category</th>
-        </tr>
-        <?php foreach ($categories->get_categories() as $category) : ?>
-            <tr>
-                <td>
-                    <?= $category ?>
-                </td>
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="delete_category" id="delete_acategory" value="<?= $category ?>" />
-                        <button type="submit"> Delete </button>
-                    </form>
-                </td>
-            </tr>
-            <?php
-            if (isset($_POST['delete_category'])) {
-                /*
-                var_dump($_POST);
-                die();
-                */
-                //might wanna add a confirmation alert for this
-                $categories->delete_category($_POST['delete_category']);
-                unset($_POST['delete_category']);
-            }
-            ?>
-        <?php endforeach ?>
-    </table>
-    -->
-    <?php /*
-        $url = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $url_parts = parse_url($url);
-        $redirect_url = $url_parts["scheme"] . "://" . $url_parts["host"] . $url_parts["path"] . "?page=a8-social-feed-categories";
-        var_dump($redirect_url);
-        die();*/
     ?>
 
 </div>

@@ -364,9 +364,7 @@ class A8_Social_Feed_Admin {
 	public function sanitize_string_array($array){
 		return map_deep($array, 'sanitize_text_field');
 	}
-	/**
-	 * todo: change all references to databases to new settings
-	 */
+
 	public function api_settings_callback($args = array()){
 		$graph_api = A8_Social_Feed_Graph_API::getInstance();
 		switch($args['setting']){

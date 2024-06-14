@@ -39,6 +39,8 @@ class A8_Social_Feed_Categories{
         return $this -> categories;
     }
 
+
+    //im pretty sure these last two funcs arent being used anymore
     function delete_category($cat_name){
         if (($key = array_search($cat_name, $this -> categories)) !== false) {
             unset($this -> categories[$key]);

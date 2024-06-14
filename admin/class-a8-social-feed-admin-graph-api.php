@@ -88,7 +88,7 @@ class A8_Social_Feed_Graph_API{
         $this->app_secret = $this -> settings['app_secret'] ?? '';
 
         $this->max_accounts = $this -> settings['max_accounts'] ?? '10';
-        $this->max_posts = $this -> settings['max_posts'] ?? '20';
+        $this->max_posts = $this -> settings['max_posts'] ?? '10';
         $this->abs_max_posts = $this -> settings['abs_max_posts'] ?? '100';
     }
     
@@ -105,52 +105,73 @@ class A8_Social_Feed_Graph_API{
     }
 
     
-
+    /**
+     * Accesses graph api to get long-lived access token given a short-lived one
+     * 
+     * Requires client ID and App Secret in settings already
+     * 
+     * Returns true if successful and sets the long-lived token and IG user ID in the settings
+     * 
+     * Returns false otherwise
+     * 
+     * @param mixed $short_token
+     * 
+     * @return boolean
+     */
     public function update_access_token($short_token) {
-        $token_response_json = wp_remote_get('https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id='.$this->client_id.'&client_secret='.$this->app_secret.'&fb_exchange_token='.$short_token);
-        $token_response = json_decode($token_response_json['body'], true);
-        if (!array_key_exists('access_token', $token_response)){
-            new A8_Social_Feed_Errors($token_response['error']['message'], 'notice-error');
+        if(empty($this->client_id) || empty($this->app_secret)){
+            new A8_Social_Feed_Errors("No Client ID or App Secret Found.", 'notice-error');
             return false;
         } else {
-            $this->access_token = $token_response['access_token'];
-
-            $fb_page_data_json = wp_remote_get('https://graph.facebook.com/v18.0/me/accounts?access_token='.$this -> access_token);
-            $fb_page_data = json_decode($fb_page_data_json['body'], true);
-            //var_dump($fb_page_data);
-            if(array_key_exists('error',$fb_page_data)){
-                new A8_Social_Feed_Errors($fb_page_data['error']['message'], 'notice-error');
+            $token_response_json = wp_remote_get('https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id='.$this->client_id.'&client_secret='.$this->app_secret.'&fb_exchange_token='.$short_token);
+            $token_response = json_decode($token_response_json['body'], true);
+            if (!array_key_exists('access_token', $token_response)){
+                new A8_Social_Feed_Errors($token_response['error']['message'], 'notice-error');
                 return false;
-            }else {
+            } else {
+                $this->access_token = $token_response['access_token'];
+
+                $fb_page_data_json = wp_remote_get('https://graph.facebook.com/v18.0/me/accounts?access_token='.$this -> access_token);
+                $fb_page_data = json_decode($fb_page_data_json['body'], true);
                 //var_dump($fb_page_data);
-                //die('end');
-                $fb_page_id = $fb_page_data['data'][0]['id'];
-                $insta_acc_data_json = wp_remote_get('https://graph.facebook.com/v18.0/'.$fb_page_id.'?fields=instagram_business_account&access_token='.$this -> access_token);
-                $insta_acc_data = json_decode($insta_acc_data_json['body'], true);
-                //var_dump($insta_acc_data);
-                //die('end');
-                if(array_key_exists('error',$insta_acc_data)){
-                    new A8_Social_Feed_Errors($insta_acc_data['error']['message'], 'notice-error');
+                if(array_key_exists('error',$fb_page_data)){
+                    new A8_Social_Feed_Errors($fb_page_data['error']['message'], 'notice-error');
                     return false;
-                }else{
-                    $this -> ig_user_id = $insta_acc_data['instagram_business_account']['id'];
-                    update_option($this -> db_api_info, array (
-                        'short_access_token' => '',
-                        'long_access_token' => $this -> access_token, 
-                        'ig_user_id' => $this -> ig_user_id
-                    ));
+                }else {
+                    //var_dump($fb_page_data);
+                    //die('end');
+                    $fb_page_id = $fb_page_data['data'][0]['id'];
+                    $insta_acc_data_json = wp_remote_get('https://graph.facebook.com/v18.0/'.$fb_page_id.'?fields=instagram_business_account&access_token='.$this -> access_token);
+                    $insta_acc_data = json_decode($insta_acc_data_json['body'], true);
+                    //var_dump($insta_acc_data);
+                    //die('end');
+                    if(array_key_exists('error',$insta_acc_data)){
+                        new A8_Social_Feed_Errors($insta_acc_data['error']['message'], 'notice-error');
+                        return false;
+                    }else{
+                        $this -> ig_user_id = $insta_acc_data['instagram_business_account']['id'];
+                        update_option($this -> db_api_info, array (
+                            'short_access_token' => '',
+                            'long_access_token' => $this -> access_token, 
+                            'ig_user_id' => $this -> ig_user_id
+                        ));
+                    }
                 }
+                return true;
             }
-            return true;
         }
     }
 
     /**
+     * Similar to update_access_token but with client ID and App Secret as parameters rather than taking them from the settings
+     * 
+     * Not being used currently but im leaving it in just in case
+     * 
      * @param String $short_token
      * @param String $client_id
      * @param String $app_secret
      * 
-     * @return bool
+     * @return boolean
      */
     public function update_app_details($short_token, $client_id, $app_secret){
         $token_response_json = wp_remote_get('https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id='.$client_id.'&client_secret='.$app_secret.'&fb_exchange_token='.$short_token);
@@ -192,18 +213,6 @@ class A8_Social_Feed_Graph_API{
                 }
             }
             return true;
-        }
-    }
-
-    public function update_feed_settings($max_accounts, $max_posts, $abs_max_posts){
-        if(is_int($max_accounts) && is_int($max_posts) && is_int($abs_max_posts)){
-            update_option($this -> db_max_accounts,$max_accounts);
-            update_option($this -> db_max_posts,$max_posts);
-            update_option($this -> db_abs_max_posts,$abs_max_posts);
-            new A8_Social_Feed_Errors('Feed Settings Updated', 'notice-success');
-
-        } else {
-            new A8_Social_Feed_Errors('Please ensure max values are ints', 'notice-error');
         }
     }
 
@@ -253,10 +262,6 @@ class A8_Social_Feed_Graph_API{
         } else {
             return true;
         }
-    }
-
-    public function get_next_page($cursor){
-        //get next page of api results
     }
 
 }

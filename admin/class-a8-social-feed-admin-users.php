@@ -91,7 +91,12 @@ class A8_Social_Feed_Users {
         $user_list = array();
 
         if($category=='ALL'){ //MURDER MEEEEE
-			$user_list = $this -> get_user_list();
+			foreach($this -> users as $username => $user_info){
+                //only get users that have a category assigned
+                if(!empty($user_info['category'])){
+                    array_push($user_list, $username);
+                }
+            }
 		} else {
 			$category = explode(",",$category);
 			foreach($category as $cat){

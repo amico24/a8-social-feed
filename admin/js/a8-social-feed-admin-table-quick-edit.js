@@ -1,6 +1,5 @@
 jQuery(document).ready(function($){
-    //only on categories for now
-    //need to make sure only one edit menu exists at one time
+
     console.log(table_data);
     let row = null;
     let edit_menu = null;
@@ -24,7 +23,7 @@ jQuery(document).ready(function($){
             return this.nodeType == 3; //selects only the text in the html element
         }).text().trim();
 
-        console.log(table_data.user_data[current_name]);
+        //console.log(table_data.user_data[current_name]);
         
 
         let html = "";
@@ -61,6 +60,7 @@ jQuery(document).ready(function($){
                 html += '<tr class="inline-edit-row inline-edit-row-post quick-edit-row quick-edit-row-post inline-edit-post inline-editor">';
                     html += '<td colspan = "4">';
                         html += '<div class="inline-edit-wrapper" role="region">';
+                        /* //removed "edit username" option bc idk what to do with it lmao
                             html += '<fieldset class="inline-edit-col-left">';
                                 html += '<legend class="inline-edit-legend">Quick Edit</legend>';
                                 html += '<div class="inline-edit-col">';
@@ -73,8 +73,8 @@ jQuery(document).ready(function($){
                                         html += '</span>';
                                     html += '</label>';
                                 html += '</div>';
-                            html += '</fieldset>';
-                            html += '<fieldset class="inline-edit-col-center inline-edit-categories">';
+                            html += '</fieldset>';*/
+                            html += '<fieldset class="inline-edit-col-left inline-edit-categories">';
                                 html += '<div class="inline-edit-col">';
                                     html += '<span class="title inline-edit-categories-label">Categories</span>';
                                     html += '<ul class="cat-checklist category-checklist">';
@@ -90,7 +90,7 @@ jQuery(document).ready(function($){
                                     html += '</ul>';
                                 html += '</div>';     
                             html += '</fieldset>';
-                            html += '<fieldset class="inline-edit-col-right">';
+                            html += '<fieldset class="inline-edit-col-center">';
                                 html += '<div class="inline-edit-col">';
                                     html += '<label>';
                                         html += '<span class="title">Featured</span>';
