@@ -1,8 +1,9 @@
 
 jQuery(document).ready(function($){
+    //handles checklist for categories if present
     console.log("Checkbox Detected.");
     console.log(categories);
-    $("body").on('click',".category-checkbox",function(){ //click func doesnt work for dynamic elements
+    $("body").on('click',".category-checkbox",function(){ //normal click func doesnt work for dynamic elements
         console.log("Button clicked");
         var category = $(this).parent().text();
         console.log(category);

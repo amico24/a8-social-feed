@@ -2,6 +2,8 @@
 
 namespace ASF\Admin;
 
+//abstract class for displays
+
 abstract class Display {
     protected $profile_picture;
     protected $username;

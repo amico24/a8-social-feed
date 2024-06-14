@@ -14,6 +14,7 @@ $categories = A8_Social_Feed_Categories::getInstance();
 <div class="wrap">
     <h2>Settings</h2>
 
+    <!-- Generating input field with settings api -->
     <form action='options.php' method='post'>
 
         <?php

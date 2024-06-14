@@ -2,6 +2,8 @@
 
 namespace ASF\Admin;
 
+//class for managing categories
+
 class A8_Social_Feed_Categories{
     private $db_categories = 'asf_categories';
 
@@ -25,22 +27,41 @@ class A8_Social_Feed_Categories{
         return self::$instance;
     }
 
+    /**
+     * Adds category to settings
+     * 
+     * @param mixed $cat_name
+     * 
+     * @return bool
+     */
     function create_category($cat_name){
         if(in_array($cat_name, $this -> categories)){
             new A8_Social_Feed_Errors('Category already exists. Please choose a different name.', 'notice-error');
+            return false;
         } else {
             array_push($this -> categories, $cat_name);
             update_option($this -> db_categories, $this -> categories);
             new A8_Social_Feed_Errors('Category Created', 'notice-success');
+            return true;
         }
     }
 
+    /**
+     * Returns array of category names
+     * @return array
+     */
     function get_categories(){
         return $this -> categories;
     }
 
 
-    //im pretty sure these last two funcs arent being used anymore
+    
+    /**
+     * Deletes a category from database
+     * @param mixed $cat_name
+     * 
+     * @return void
+     */
     function delete_category($cat_name){
         if (($key = array_search($cat_name, $this -> categories)) !== false) {
             unset($this -> categories[$key]);
@@ -48,6 +69,15 @@ class A8_Social_Feed_Categories{
         update_option($this -> db_categories, $this -> categories);
     }
 
+
+
+    /**
+     * Changes the name of a category in the database
+     * @param mixed $old_name
+     * @param mixed $new_name
+     * 
+     * @return bool
+     */
     function edit_category_name($old_name, $new_name){ 
         if(in_array($old_name, $this -> categories)){
             $old_cats = $this -> categories;

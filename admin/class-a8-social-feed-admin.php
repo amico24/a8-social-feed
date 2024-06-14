@@ -59,7 +59,7 @@ class A8_Social_Feed_Admin {
 
 		add_action('admin_menu', array($this, 'add_plugin_admin_menu'));
 		add_action('init', array($this, 'init_admin_classes'));
-		add_action('init', array($this, 'edit_options'));
+		add_action('init', array($this, 'edit_delete_options'));
 		add_action('admin_init', array($this, 'initialize_settings'));
 		add_action('update_option_asf-api-token', array($this, 'update_access_token'), 10, 3);
 		add_action('add_option_asf-api-token', array($this, 'add_access_token'), 10, 2);
@@ -82,6 +82,10 @@ class A8_Social_Feed_Admin {
 
 	
 
+	/**
+	 * Edits account info from the profile management table 
+	 * @return void
+	 */
 	public function edit_account(){
 		$user_data = $_POST['account_data']['user_data'];
 		$username = $_POST['account_data']['username'];
@@ -93,6 +97,11 @@ class A8_Social_Feed_Admin {
 		}
 
 	}
+
+	/**
+	 * Edits category name from category management table
+	 * @return void
+	 */
 	public function edit_category(){
 		//var_dump($_POST);
 		//die();
@@ -109,8 +118,12 @@ class A8_Social_Feed_Admin {
 		
 	}
 	
-	//have to put the deletion for categories here bc the redirect has to be done on initialization
-	public function edit_options(){
+	/**
+	 * Deletes entries from the profile and category management tables
+	 * @return void
+	 */
+	public function edit_delete_options(){
+		//have to put the deletion for categories here bc the redirect has to be done on initialization
 		$categories = A8_Social_Feed_Categories::getInstance();
 		$accounts = A8_Social_Feed_Users::getInstance();
 		if(isset($_GET['action'])){
@@ -120,19 +133,9 @@ class A8_Social_Feed_Admin {
 						$categories->delete_category($_GET['element']);
 					}
 					break;
-				case 'edit-category':
-					if(isset(($_GET['element']))){
-						//to be done
-					}
-					break;
 				case 'delete-account':
 					if(isset(($_GET['element']))){
 						$accounts->delete_user($_GET['element']);
-					}
-					break;
-				case 'edit-account':
-					if(isset(($_GET['element']))){
-						//to be done
 					}
 					break;
 			}
@@ -147,6 +150,12 @@ class A8_Social_Feed_Admin {
 	}
 
 	
+	/**
+	 * Generates html for feed when "load more" button is pressed
+	 * 
+	 * i dont remember why i had to make this a separate function
+	 * @return void
+	 */
 	public function handle_more_api_data(){
 		$raw_data=wp_unslash($_POST); //cannot tell if i need to use json_decode here 
 		//if things break in the next parts maybe put it
@@ -158,6 +167,10 @@ class A8_Social_Feed_Admin {
 		wp_send_json_success($feed_display);
 	}
 
+	/**
+	 * Generates html for feed after getting info from API call
+	 * @return void
+	 */
 	public function handle_api_data(){
 		$raw_data=wp_unslash($_POST); //cannot tell if i need to use json_decode here 
 		//if things break in the next parts maybe put it
@@ -170,6 +183,10 @@ class A8_Social_Feed_Admin {
 	}
 
 
+	/**
+	 * Initializes files
+	 * @return void
+	 */
 	public function init_admin_classes(){
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin\class-a8-social-feed-admin-errors.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin\class-a8-social-feed-admin-graph-api.php';
@@ -206,6 +223,14 @@ class A8_Social_Feed_Admin {
 		//wp_register_script('graphAPI', plugin_dir_url(__FILE__) . 'js/a8-social-feed-admin-graph-api.js', array('jquery'), null);
 	}
 
+	/**
+	 * Handles shortcode initialization and arguments
+	 * 
+	 * @param mixed $atts
+	 * @param string $content
+	 * 
+	 * @return void
+	 */
 	public function feed_display($atts, $content = ""){
 		$a = shortcode_atts(
 			array(
@@ -287,20 +312,15 @@ class A8_Social_Feed_Admin {
 	/**
 	 * Everything below displays the menus and submenus for the plugin settings
 	 */
-	public function add_plugin_admin_menu()
-	{
+	public function add_plugin_admin_menu() {
 		//adds the option for the settings to the sidebar
 		add_menu_page($this->plugin_name, 'A8 Social Feed', 'administrator', $this->plugin_name, array($this, 'display_plugin_admin_dashboard'), 'dashicons-camera', 26);
 		add_submenu_page($this->plugin_name, 'A8 Social Feed Profiles', 'Profile Management', 'administrator', $this->plugin_name . '-profiles', array($this, 'display_plugin_admin_users'));
-		//adds a page to display when you click the sidebar button
 		add_submenu_page($this->plugin_name, 'A8 Social Feed Categories', 'Category Management', 'administrator', $this->plugin_name . '-categories', array($this, 'display_plugin_admin_categories'));
-	
 		add_submenu_page($this->plugin_name, 'A8 Social Feed Settings', 'Settings', 'administrator', $this->plugin_name . '-settings', array($this, 'display_plugin_admin_settings'));
+	}
 
-		
-		}
-	public function display_plugin_admin_dashboard()
-	{
+	public function display_plugin_admin_dashboard() {
 		//connects the display file for the dashboard and displays the html there
 		require_once 'partials/' . $this->plugin_name . '-admin-display.php';
 	}
@@ -321,6 +341,11 @@ class A8_Social_Feed_Admin {
 		require_once 'partials/' . $this->plugin_name . '-admin-categories-display.php';
 	}
 
+
+	/**
+	 * Initializes settings options using settings API
+	 * @return void
+	 */
 	public function initialize_settings(){
 		register_setting("ASF-settings", "asf-settings", array( 
 			'type' => 'array',
@@ -361,10 +386,24 @@ class A8_Social_Feed_Admin {
 	
 	}
 
+
+	/**
+	 * Sanitizing function for string array (used in settings)
+	 * @param mixed $array
+	 * 
+	 * @return array
+	 */
 	public function sanitize_string_array($array){
 		return map_deep($array, 'sanitize_text_field');
 	}
 
+
+	/**
+	 * Outputs html for settings fields
+	 * @param array $args
+	 * 
+	 * @return void
+	 */
 	public function api_settings_callback($args = array()){
 		$graph_api = A8_Social_Feed_Graph_API::getInstance();
 		switch($args['setting']){
@@ -425,6 +464,7 @@ class A8_Social_Feed_Admin {
 			
 	}
 
+	//everything below runs functions for special cases when updating settings needs to run other funcs when a value is changed
 	public function update_access_token($old_value, $value, $option){
 		$graph_api = A8_Social_Feed_Graph_API::getInstance();
 		$graph_api -> update_access_token($value['short_access_token']);

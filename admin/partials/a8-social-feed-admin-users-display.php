@@ -3,6 +3,8 @@ namespace ASF\Admin;
 
 use Account_Table;
 
+//display file for Profile management
+
 $users = A8_Social_Feed_Users::getInstance();
 $categories = A8_Social_Feed_Categories::getInstance();
 $graph_api = A8_Social_Feed_Graph_API::getInstance();
@@ -15,6 +17,7 @@ $accTable->prepare_items();
     <h2>Profile Management</h2>
     <hr>
     
+<!-- Generating input field with settings api -->
     <form action='options.php' method='post'>
 
         <?php
@@ -25,6 +28,7 @@ $accTable->prepare_items();
 
     </form>
 
+    <!-- Generates settings table from accounts table class -->
     <?php 
         $accTable->display();
         $user_data = array();

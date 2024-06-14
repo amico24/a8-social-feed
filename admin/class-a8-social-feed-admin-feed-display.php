@@ -1,6 +1,7 @@
 <?php
 namespace ASF\Admin;
 
+//class for creating entire feed display
 class A8_Social_Feed_Admin_Feed_Display {
 
     private $a = array();

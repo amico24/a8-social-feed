@@ -17,7 +17,6 @@ $users = A8_Social_Feed_Users::getInstance();
 $categories = A8_Social_Feed_Categories::getInstance();
 ?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
 <div class="wrap">
 

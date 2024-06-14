@@ -27,6 +27,7 @@ $catTable->prepare_items();
 
     <h1>Categories</h1>
 
+    <!-- Generating input field with settings api -->
     <form action='options.php' method='post'>
 
         <?php
@@ -36,7 +37,8 @@ $catTable->prepare_items();
         ?>
 
     </form>
-
+    
+    <!-- Generates settings table from accounts table class -->
     <?php 
         $catTable->display();
         $table_data = array(

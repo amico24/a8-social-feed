@@ -2,6 +2,8 @@
 
 namespace ASF\Admin;
 
+//class for displaying error or success notices
+
 class A8_Social_Feed_Errors{
 	/**
 	 * Message to be displayed in a warning.

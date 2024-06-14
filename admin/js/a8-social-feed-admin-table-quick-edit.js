@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-
+    //handles the quick edit functions in the settings tables
     console.log(table_data);
     let row = null;
     let edit_menu = null;

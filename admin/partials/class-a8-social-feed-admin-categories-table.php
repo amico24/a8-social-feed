@@ -1,5 +1,5 @@
 <?php
-
+//class for table in category management
 //apprently their tables are not an api but its a class u have to extend
 //pain
 class Category_Table extends WP_List_Table {
@@ -14,11 +14,10 @@ class Category_Table extends WP_List_Table {
     }
 
     function prepare_items(){
-        //when u get the categories in from the options is gets passed as an indexed array
+        //when u get the categories in from the options it gets passed as an indexed array
         //for the other functions to work normally we want the categories to be in a 2d array with the index and name in their own arrays as each entry
         $temp = get_option("asf_categories");
         //this restructures the categories so the nidex and name have their own entries
-        //i mental-ed this shit i am so big brained for this
         foreach($temp as $category){
             array_push($this -> table_data, array(
                 'index' => array_search($category, $temp)+1,
@@ -39,6 +38,7 @@ class Category_Table extends WP_List_Table {
         $this->items = $this->table_data;
 
     }
+    
     //define column headers
     function get_columns(){
         $columns = array(

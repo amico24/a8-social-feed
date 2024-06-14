@@ -1,7 +1,7 @@
 <?php
 
 namespace ASF\Admin;
-
+//class for creating display for individual posts
 class Post_Display extends Display{
     private $media_url;
     private $permalink;
@@ -31,7 +31,7 @@ class Post_Display extends Display{
         }else{
             $this -> post_exists = false;
         }
-    }//idk what to do abt pagination yet
+    }
 
     function generate_html(){
         $html = '';

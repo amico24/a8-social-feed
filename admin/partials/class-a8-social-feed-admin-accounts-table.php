@@ -1,5 +1,8 @@
 <?php
 
+//handles table in profile management
+//similar to category table
+
 class Account_Table extends WP_List_Table {
     private $table_data = array();
 
